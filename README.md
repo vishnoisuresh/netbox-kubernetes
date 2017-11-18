@@ -17,7 +17,11 @@ $ kubectl apply -f nginx-all.yaml --namespace netbox
 
 At the moment you can access the application using follwing command. 
 ```
-$ kubectl port-forwarder Nginx-Pod-Name localport:80 --namespace netbox
+$ kubectl get pods -n netbox
+```
+Now you can replace  Nginx-Pod-Name
+```
+$ kubectl port-forward Nginx-Pod-Name localport:80 --namespace netbox
 ```
 The application will be available after a few minutes.
 "http://localhost:localport"
