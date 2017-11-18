@@ -1,0 +1,63 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    backend: postgres
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        backend: postgres
+    spec:
+      containers:  
+      - image: postgres:9.6-alpine
+        name: postgres 
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_DB
+              name: postgres-env
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_USER
+              name: postgres-env      
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_PASSWORD
+              name: postgres-env
+          
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    backend: postgres
+spec:
+  clusterIP: None
+  ports:
+  - name: headless
+    port: 5432
+    targetPort: 5432
+  selector:
+    backend: postgres
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-env
+data:
+  POSTGRES_DB: netbox
+  POSTGRES_USER: netbox
+  POSTGRES_PASSWORD: J5brHrAXFLQSif0K
+  
