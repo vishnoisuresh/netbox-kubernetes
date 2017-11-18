@@ -14,8 +14,6 @@ spec:
       containers:
       - name: netbox
         image: ninech/netbox:v2.2.4
-        command: ["gunicorn"]
-        args: ["--log-level debug", "-c /opt/netbox/gunicorn_config.py", "netbox.wsgi"]
         ports:
         - containerPort: 8001
         env:
