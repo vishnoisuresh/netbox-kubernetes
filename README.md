@@ -7,7 +7,7 @@ Kubernetes manifest resources for Netbox.  all images are pulled from docker hub
 To get NetBox up and running:
 
 ```
-$ git clone -b master https://github.com/vishnoisuresh/netbox-kubernetes.git
+$ git clone 
 $ cd netbox-kubernetes
 $ kubectl apply -f netbox-namespace.yaml 
 $ kubectl apply -f postgres-all.yaml --namespace netbox
