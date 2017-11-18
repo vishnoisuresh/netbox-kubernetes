@@ -42,6 +42,7 @@ You can configure the app using environment variables. These are defined in Conf
 
 ## RoadMap
 Ingress-Contorler 
+Helm Chart
 
 ## About
 This is a living document. If you spot areas that can be improved or rewritten, contributions are welcome! 
