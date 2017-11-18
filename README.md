@@ -23,7 +23,7 @@ Now you can replace  Nginx-Pod-Name
 ```
 $ kubectl port-forward Nginx-Pod-Name 8001:80 --namespace netbox
 ```
-** 8001 is a localport** It can be changed according to you. 
+**8001 is a localport** It can be changed according to you. 
 The application will be available after a few minutes.
 "http://localhost:8001"
 
