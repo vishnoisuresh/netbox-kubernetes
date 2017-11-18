@@ -32,6 +32,21 @@ spec:
         configMap:
           name: nginx-conf
        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    frontend: nginx
+spec:
+  type: NodePort
+  ports:
+  - name: "80"
+    port: 80
+    targetPort: 80
+  selector:
+    frontend: nginx
 
 ---
 apiVersion: v1
