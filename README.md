@@ -22,18 +22,6 @@ $ kubectl port-forwarder Nginx-Pod-Name localport:80
 The application will be available after a few minutes.
 "http://localhost:localport"
 
-Use `docker-compose port nginx 80` to find out where to connect to.
-
-```
-$ echo "http://$(docker-compose port nginx 80)/"
-http://0.0.0.0:32768/
-
-# Open netbox in your default browser on macOS:
-$ open "http://$(docker-compose port nginx 80)/"
-
-# Open netbox in your default browser on (most) linuxes:
-$ xdg-open "http://$(docker-compose port nginx 80)/" &>/dev/null &
-```
 
 Default credentials:
 
