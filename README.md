@@ -21,10 +21,11 @@ $ kubectl get pods -n netbox
 ```
 Now you can replace  Nginx-Pod-Name
 ```
-$ kubectl port-forward Nginx-Pod-Name localport:80 --namespace netbox
+$ kubectl port-forward Nginx-Pod-Name 8001:80 --namespace netbox
 ```
+** 8001 is a localport** It can be changed according to you. 
 The application will be available after a few minutes.
-"http://localhost:localport"
+"http://localhost:8001"
 
 
 Default credentials:
@@ -37,7 +38,7 @@ https://hub.docker.com/r/ninech/netbox/
 
 ## Configuration
 
-You can configure the app using environment variables. These are defined in `netbox.env`.
+You can configure the app using environment variables. These are defined in ConfigMap section in `netbox-all.yaml` file.
 
 
 
