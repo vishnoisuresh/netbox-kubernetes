@@ -1,0 +1,189 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: netbox
+  labels:
+    app: netbox
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: netbox
+    spec:
+      containers:
+      - name: netbox
+        image: ninech/netbox:v2.2.4
+        command: ["gunicorn"]
+        args: ["--log-level debug", "-c /opt/netbox/gunicorn_config.py", "netbox.wsgi"]
+        ports:
+        - containerPort: 8001
+        env:
+        - name: ALLOWED_HOSTS
+          valueFrom:
+            configMapKeyRef:
+              key: ALLOWED_HOSTS
+              name: netbox-netbox-env
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: DB_HOST
+              name: netbox-netbox-env
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: DB_NAME
+              name: netbox-netbox-env
+        - name: DB_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: DB_PASSWORD
+              name: netbox-netbox-env
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              key: DB_USER
+              name: netbox-netbox-env
+        - name: EMAIL_FROM
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_FROM
+              name: netbox-netbox-env
+        - name: EMAIL_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_PASSWORD
+              name: netbox-netbox-env
+        - name: EMAIL_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_PORT
+              name: netbox-netbox-env
+        - name: EMAIL_SERVER
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_SERVER
+              name: netbox-netbox-env
+        - name: EMAIL_TIMEOUT
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_TIMEOUT
+              name: netbox-netbox-env
+        - name: EMAIL_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_USERNAME
+              name: netbox-netbox-env
+        - name: NETBOX_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: NETBOX_PASSWORD
+              name: netbox-netbox-env
+        - name: NETBOX_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: NETBOX_USERNAME
+              name: netbox-netbox-env
+        - name: SECRET_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: SECRET_KEY
+              name: netbox-netbox-env
+        - name: SUPERUSER_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              key: SUPERUSER_EMAIL
+              name: netbox-netbox-env
+        - name: SUPERUSER_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: SUPERUSER_NAME
+              name: netbox-netbox-env
+        - name: SUPERUSER_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: SUPERUSER_PASSWORD
+              name: netbox-netbox-env
+        volumeMounts:
+        - name: netbox-nginx-config
+          mountPath: /etc/netbox-nginx/ 
+        - name: netbox-static-files
+          mountPath: /opt/netbox/netbox/static  
+      restartPolicy: Always
+      volumes:
+      - name: netbox-nginx-config
+        configMap:
+          name: nginx-conf
+      - name: netbox-static-files
+        persistentVolumeClaim:
+          claimName: netbox-static-files
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: netbox
+  labels:
+    app: netbox
+spec:
+  ports:
+  - name: nbox
+    port: 8001
+    targetPort: 8001
+  selector:
+    app: netbox
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: netbox-nginx-config
+  labels:
+    pvcname: netbox-nginx-config
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+      
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: netbox-static-files
+  labels:
+    pvcname: netbox-static-files
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: netbox-netbox-env
+data:
+  ALLOWED_HOSTS: localhost
+  DB_HOST: postgres
+  DB_NAME: netbox
+  DB_PASSWORD: J5brHrAXFLQSif0K
+  DB_USER: netbox
+  EMAIL_FROM: netbox@bar.com
+  EMAIL_PASSWORD: bar
+  EMAIL_PORT: "25"
+  EMAIL_SERVER: localhost
+  EMAIL_TIMEOUT: "10"
+  EMAIL_USERNAME: foo
+  NETBOX_PASSWORD: guest
+  NETBOX_USERNAME: guest
+  SECRET_KEY: r8OwDznj!!dci
+  SUPERUSER_EMAIL: admin@example.com
+  SUPERUSER_NAME: admin
+  SUPERUSER_PASSWORD: admin
+
+
+
