@@ -131,19 +131,6 @@ spec:
   selector:
     app: netbox
 
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: netbox-nginx-config
-  labels:
-    pvcname: netbox-nginx-config
-spec:
-  accessModes:
-  - ReadWriteMany
-  resources:
-    requests:
-      storage: 100Mi
       
 ---
 apiVersion: v1
