@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: netbox
-        image: ninech/netbox:v2.2.4
+        image: ninech/netbox:v2.2.6
         ports:
         - containerPort: 8001
         env:
@@ -87,6 +87,11 @@ spec:
             configMapKeyRef:
               key: SECRET_KEY
               name: netbox-netbox-env
+        - name: SUPERUSER_API_TOKEN
+          valueFrom:
+            configMapKeyRef:
+              key: SUPERUSER_API_TOKEN
+              name: netbox-netbox-env
         - name: SUPERUSER_EMAIL
           valueFrom:
             configMapKeyRef:
@@ -152,7 +157,7 @@ kind: ConfigMap
 metadata:
   name: netbox-netbox-env
 data:
-  ALLOWED_HOSTS: localhost
+  ALLOWED_HOSTS: localhost 0.0.0.0 127.0.0.1 [::1] netbox nginx netboxdocker.docker nginx.netboxdocker.docker
   DB_HOST: postgres
   DB_NAME: netbox
   DB_PASSWORD: J5brHrAXFLQSif0K
@@ -166,6 +171,7 @@ data:
   NETBOX_PASSWORD: guest
   NETBOX_USERNAME: guest
   SECRET_KEY: r8OwDznj!!dci
+  SUPERUSER_API_TOKEN: 0123456789abcdef0123456789abcdef01234567
   SUPERUSER_EMAIL: admin@example.com
   SUPERUSER_NAME: admin
   SUPERUSER_PASSWORD: admin
