@@ -157,7 +157,7 @@ kind: ConfigMap
 metadata:
   name: netbox-netbox-env
 data:
-  ALLOWED_HOSTS: localhost 0.0.0.0 127.0.0.1 [::1] netbox nginx netboxdocker.docker nginx.netboxdocker.docker
+  ALLOWED_HOSTS: '*'
   DB_HOST: postgres
   DB_NAME: netbox
   DB_PASSWORD: J5brHrAXFLQSif0K
