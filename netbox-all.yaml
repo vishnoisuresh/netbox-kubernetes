@@ -169,6 +169,40 @@ data:
   SUPERUSER_EMAIL: admin@example.com
   SUPERUSER_NAME: admin
   SUPERUSER_PASSWORD: admin
-
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: nginx-conf
+data:
+  nginx.conf: |
+    worker_processes 1;
+    events {
+      worker_connections  1024;
+    }
+    http {
+      include       /etc/nginx/mime.types;
+      default_type  application/octet-stream;
+      sendfile        on;
+      tcp_nopush     on;
+      keepalive_timeout  65;
+      gzip  on;
+      server_tokens off;
+      server {
+          listen 80;
+          server_name localhost;
+          access_log off;
+          location /static/ {
+            alias /opt/netbox/netbox/static/;
+          }
+          location / {
+            proxy_pass http://netbox:8001;
+            proxy_set_header X-Forwarded-Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            add_header P3P 'CP="ALL DSP COR PSAa PSDa OUR NOR ONL UNI COM NAV"';
+          }
+      }
+    }
 
 
