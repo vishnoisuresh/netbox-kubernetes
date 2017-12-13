@@ -27,6 +27,11 @@ $ kubectl port-forward Nginx-Pod-Name 8001:80 --namespace netbox
 The application will be available after a few minutes.
 "http://localhost:8001"
 
+
+**accessing** Netbox using NodePort 
+As Netbox is using ALLOWED_HOST variable , we need to update the value of it as well as in /etc/hosts in order to access it on nodeport.  
+ 
+
 Default credentials:
 
 * Username: **admin**
