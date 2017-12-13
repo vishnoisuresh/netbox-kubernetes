@@ -29,7 +29,8 @@ The application will be available after a few minutes.
 
 
 **accessing** Netbox using NodePort 
-As Netbox is using ALLOWED_HOST variable , we need to update the value of it as well as in /etc/hosts in order to access it on nodeport.  
+As Netbox is using ALLOWED_HOST variable , we need to update the value of it as well as in /etc/hosts in order to access it on nodeport. for example, netbox.netbox is FQDN   
+"http://netbox.netbox:NODEPORT"
  
 
 Default credentials:
