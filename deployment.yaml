@@ -1,0 +1,172 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: netbox
+  namespace: netbox
+  labels:
+    app: netbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netbox
+  template:
+    metadata:
+      labels:
+        app: netbox
+    spec:
+      containers:
+      - image: postgres:9.6-alpine
+        name: postgres 
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_DB
+              name: postgres-env
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_USER
+              name: postgres-env      
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_PASSWORD
+              name: postgres-env
+      - image: ninech/netbox:v2.3.0
+        imagePullPolicy: Always
+        name: netbox
+        ports:
+        - name: http
+          containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 90
+          periodSeconds: 10
+        env:
+        - name: ALLOWED_HOSTS
+          value: "*"
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: db.host
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: db.port
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: db.name
+        - name: DB_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: db.password
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: db.user
+        - name: EMAIL_FROM
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: email.from
+        - name: EMAIL_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: email.password
+        - name: EMAIL_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: email.user
+        - name: EMAIL_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: email.port
+        - name: EMAIL_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: email.server
+        - name: EMAIL_TIMEOUT
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: email.timeout
+        - name: LOGIN_REQUIRED
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: login_required
+        - name: NAPALM_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: napalm.user
+        - name: NAPALM_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: napalm.password
+        - name: SECRET_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: secret_key
+        - name: SUPERUSER_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: su.email
+        - name: SUPERUSER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: su.user
+        - name: SUPERUSER_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: netboxconfigmap
+              key: su.password
+        volumeMounts:
+        - mountPath: /opt/netbox/netbox/static
+          name: netbox-static-files
+      - image: nginx:1.12-alpine
+        imagePullPolicy: Always
+        name: nginx
+        volumeMounts:
+        - mountPath: /opt/netbox/netbox/static
+          name: netbox-static-files
+        - mountPath: /etc/nginx/nginx.conf
+          name: netbox-config
+          subPath: nginx.conf
+      volumes:
+      - name: netbox-config
+        configMap:
+          name: netboxconfigmap
+          items:
+            - key: nginx.conf
+              path: nginx.conf
+      - name: netbox-static-files
+        emptyDir: {}
+      restartPolicy: Always
+status: {}

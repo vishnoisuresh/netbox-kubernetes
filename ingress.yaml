@@ -1,0 +1,11 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: netbox-ingress
+  namespace: netbox
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  backend:
+    serviceName: netboxservice
+    servicePort: 80

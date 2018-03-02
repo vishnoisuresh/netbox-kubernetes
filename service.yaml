@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: netboxservice
+  namespace: netbox
+spec:
+  selector:
+    app: netbox
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: http

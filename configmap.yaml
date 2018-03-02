@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: netboxconfigmap
+  namespace: netbox
+data:
+  db.host: "127.0.0.1"
+  db.port: "5432"
+  db.name: netboxdb
+  email.from: "netbox@email.com"
+  email.port: "25"
+  email.server: "localhost"
+  email.timeout: "3600"
+  login_required: "yes"
+  db.password: "password"
+  db.user: "netbox"
+  email.password: "password"
+  email.user: "netbox@email.com"
+  secret_key: "secret_key"
+  su.email: "netbox@email.com"
+  su.user: "netbox"
+  su.password: "password"
+  napalm.user: "netbox"
+  napalm.password: "password"
+  
+  nginx.conf: |
+    worker_processes 1;
+
+    events {
+        worker_connections  1024;
+    }
+
+    http {
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+        sendfile        on;
+        tcp_nopush     on;
+        keepalive_timeout  65;
+        gzip  on;
+        server_tokens off;
+
+        server {
+            listen 80;
+
+            server_name localhost;
+
+            access_log off;
+
+            location /static/ {
+                expires 30d;
+                alias /opt/netbox/netbox/static/;
+            }
+
+            location / {
+                proxy_pass http://localhost:8001;
+                proxy_set_header X-Forwarded-Host $http_host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                add_header P3P 'CP="ALL DSP COR PSAa PSDa OUR NOR ONL UNI COM NAV"';
+            }
+        }
+    }
