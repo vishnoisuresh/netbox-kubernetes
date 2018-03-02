@@ -28,17 +28,17 @@ Now you can check what is your external ip
 ```
 $ kubectl -n netbox get svc
 ```
-**8001 is a localport** It can be changed according to you. 
 The application will be available after a few minutes.
 "http://<externalIP>"
 
 ```
-```
+
 Default credentials:
 
 * Username: **netbox**
 * Password: **password**
 
+```
 
 ## Dependencies
 https://hub.docker.com/r/ninech/netbox/
