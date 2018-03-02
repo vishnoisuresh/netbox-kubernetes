@@ -1,17 +1,17 @@
 # netbox-kubernetes
 Kubernetes manifest resources for Netbox.  all images are pulled from docker hub. Netbox images pulled from https://hub.docker.com/r/ninech/netbox/
 
-** this is not for production this is just for testing scenarios **
+**this is not for production this is just for testing**
 
 
-## Quickstart on GKE (for testing)
+## Quickstart on GKE Google Container Engine (for testing)
 
 To get NetBox up and running:
 
 ```
 $ git clone 
 $ cd netbox-kubernetes
-gcloud container clusters get-credentials <clustername> --zone <zone> --project <project>
+$ gcloud container clusters get-credentials <clustername> --zone <zone> --project <project>
 $ kubectl apply -f netbox-namespace.yaml 
 $ kubectl apply -f configmap.yaml --namespace netbox
 $ kubectl apply -f postgres.yaml --namespace netbox
