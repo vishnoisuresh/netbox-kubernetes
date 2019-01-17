@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: netbox
-        image: ninech/netbox:v2.2.6
+        image: ninech/netbox:latest-ldap
         ports:
         - containerPort: 8001
         env:
