@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: netbox
@@ -6,6 +6,9 @@ metadata:
     app: netbox
 spec:
   replicas: 1
+  selector: 
+    matchLabels:
+      app: netbox
   template:
     metadata:
       labels:

@@ -7,22 +7,27 @@ Kubernetes manifest resources for Netbox.  all images are pulled from docker hub
 To get NetBox up and running:
 
 ```
-$ git clone 
-$ cd netbox-kubernetes
-$ kubectl apply -f netbox-namespace.yaml 
-$ kubectl apply -f postgres-all.yaml --namespace netbox
-$ kubectl apply -f netbox-all.yaml --namespace netbox
-$ kubectl apply -f nginx-all.yaml --namespace netbox
+git clone 
+cd netbox-kubernetes
+kubectl apply -f netbox-namespace.yaml 
+kubectl apply -f postgres-all.yaml --namespace netbox
+kubectl apply -f netbox-all.yaml --namespace netbox
+kubectl apply -f nginx-all.yaml --namespace netbox
 ```
 
 At the moment you can access the application using follwing command. 
 ```
-$ kubectl get pods -n netbox
+kubectl get pods -n netbox
 ```
 Now you can replace  Nginx-Pod-Name
 ```
-$ kubectl port-forward Nginx-Pod-Name 8001:80 --namespace netbox
+kubectl port-forward Nginx-Pod-Name 8001:80 --namespace netbox
 ```
+or expose ports in one command:
+```
+kubectl get pods -A -l=frontend=nginx -o name | awk '{print "kubectl port-forward " $1 " 8001:80 --namespace netbox"}' | bash
+```
+
 **8001 is a localport** It can be changed according to you. 
 The application will be available after a few minutes.
 "http://localhost:8001"

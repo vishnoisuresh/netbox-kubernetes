@@ -1,4 +1,45 @@
-apiVersion: extensions/v1beta1
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: postgres
+provisioner: k8s.io/minikube-hostpath
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-pv-volume
+  labels:
+    type: local
+    app: postgres
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/host/data/postgres"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pv-claim
+  labels:
+    app: postgres
+spec:
+  storageClassName: postgres
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+
+---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
@@ -6,16 +47,26 @@ metadata:
     backend: postgres
 spec:
   replicas: 1
+  selector: 
+    matchLabels:
+      backend: postgres
   template:
     metadata:
       labels:
         backend: postgres
     spec:
-      containers:  
+      volumes:
+      - name: postgredb
+        persistentVolumeClaim:
+          claimName: postgres-pv-claim
+      containers:
       - image: postgres:9.6-alpine
         name: postgres 
         ports:
         - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgredb
         env:
         - name: POSTGRES_DB
           valueFrom:
@@ -26,7 +77,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: POSTGRES_USER
-              name: postgres-env      
+              name: postgres-env
         - name: POSTGRES_PASSWORD
           valueFrom:
             configMapKeyRef:
@@ -60,4 +111,3 @@ data:
   POSTGRES_DB: netbox
   POSTGRES_USER: netbox
   POSTGRES_PASSWORD: J5brHrAXFLQSif0K
-  
